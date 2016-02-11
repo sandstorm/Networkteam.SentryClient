@@ -18,5 +18,10 @@ class Package extends BasePackage {
 				$bootstrap->getObjectManager()->get('Networkteam\SentryClient\ErrorHandler');
 			}
 		});
+
+		// Make Sentry DSN settable via Environment Variables. Only used in context Production/Heroku.
+		if (getenv('ENV_SENTRY_DSN')) {
+			define('ENV_SENTRY_DSN', getenv('ENV_SENTRY_DSN'));
+		}
 	}
 }

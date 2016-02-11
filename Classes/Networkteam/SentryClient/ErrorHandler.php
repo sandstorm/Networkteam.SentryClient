@@ -24,7 +24,12 @@ class ErrorHandler {
 	 * Initialize the raven client and fatal error handler (shutdown function)
 	 */
 	public function initializeObject() {
-		$client = new \Raven_Client($this->dsn);
+		$options = array();
+		if (getenv('GIT_REV')) {
+			// this is automatically injected by Dokku deployments
+			$options['release'] = getenv('GIT_REV');
+		}
+		$client = new \Raven_Client($this->dsn, $options);
 		$errorHandler = new \Raven_ErrorHandler($client, TRUE);
 		$errorHandler->registerShutdownFunction();
 		$this->client = $client;

@@ -22,6 +22,9 @@ Add the following to your `Settings.yaml` and replace the `dsn` setting with you
         # The Sentry DSN
         dsn: 'http://public_key:secret_key@your-sentry-server.com/project-id'
 
+When deploying to **Dokku/Heroku**, you can instead use the context `Production/Heroku` and set the environment variable
+`ENV_SENTRY_DSN` instead.
+
 For non-Neos projects the TypoScript error handler aspect needs to be ignored by Flow. This can be achieved by
 adding the following exclude configuration to your settings:
 

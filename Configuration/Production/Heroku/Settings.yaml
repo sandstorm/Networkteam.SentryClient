@@ -1,0 +1,3 @@
+Networkteam:
+  SentryClient:
+    dsn: %ENV_SENTRY_DSN%
