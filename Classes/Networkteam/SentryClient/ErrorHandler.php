@@ -55,7 +55,10 @@ class ErrorHandler {
 			$extraData['referenceCode'] = $exception->getReferenceCode();
 		}
 
-		$this->client->captureException($exception, array('extra' => $extraData, 'tags' => $tags));
+		if ($this->client) {
+			// safeguard; for some reasons, during cache:warmup, $this->client is not set.
+			$this->client->captureException($exception, array('extra' => $extraData, 'tags' => $tags));
+		}
 	}
 
 	/**
