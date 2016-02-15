@@ -2,6 +2,7 @@
 namespace Networkteam\SentryClient;
 
 use TYPO3\Flow\Annotations as Flow;
+use TYPO3\Flow\Object\ObjectManagerInterface;
 use TYPO3\Flow\Reflection\ObjectAccess;
 use TYPO3\Party\Domain\Model\Person;
 
@@ -19,6 +20,12 @@ class ErrorHandler {
 	 * @var \Raven_Client
 	 */
 	protected $client;
+
+	/**
+	 * @Flow\Inject
+	 * @var ObjectManagerInterface
+	 */
+	protected $objectManager;
 
 	/**
 	 * Initialize the raven client and fatal error handler (shutdown function)
@@ -93,11 +100,13 @@ class ErrorHandler {
 			if ($account !== NULL) {
 				$userContext['username'] = $account->getAccountIdentifier();
 			}
-			$party = $securityContext->getParty();
-			if ($party instanceof Person && $party->getPrimaryElectronicAddress() !== NULL) {
-				$userContext['email'] = (string)$party->getPrimaryElectronicAddress();
-			} elseif ($party !== NULL && ObjectAccess::isPropertyGettable($party, 'emailAddress')) {
-				$userContext['email'] = (string)ObjectAccess::getProperty($party, 'emailAddress');
+			if ($this->objectManager->isRegistered('TYPO3\Party\Domain\Service\PartyService')) {
+				$party = $securityContext->getParty();
+				if ($party instanceof Person && $party->getPrimaryElectronicAddress() !== NULL) {
+					$userContext['email'] = (string)$party->getPrimaryElectronicAddress();
+				} elseif ($party !== NULL && ObjectAccess::isPropertyGettable($party, 'emailAddress')) {
+					$userContext['email'] = (string)ObjectAccess::getProperty($party, 'emailAddress');
+				}
 			}
 		}
 
